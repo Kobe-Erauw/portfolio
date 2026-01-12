@@ -33,12 +33,12 @@ const { data: repositories, status, error } = useQuery({
             </p>
             <div class="mt-3 d-flex justify-content-between align-items-center">
               <router-link :to="{ name: 'project-detail', params: { name: repo.name } }" class="btn btn-primary btn-sm">Bekijk Details</router-link>
-              <a :href="repo.html_url" target="_blank" class="btn btn-outline-secondary btn-sm" title="Bekijk op GitHub"><i class="bi bi-github"></i> GitHub</a>
-            </div>
-            <div class="mt-2 text-end">
-              <span class="badge bg-secondary">
-                <i class="bi bi-star-fill"></i> ⭐ {{ repo.stargazers_count }}
-              </span>
+              <a :href="repo.html_url" target="_blank" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2" title="Bekijk op GitHub">
+                <i class="bi bi-github"></i> 
+                <span>GitHub</span>
+                <span class="vr mx-1"></span>
+                <span><i class="bi bi-star-fill text-warning"></i> {{ repo.stargazers_count }}</span>
+              </a>
             </div>
           </div>
           <div class="card-footer text-muted small">

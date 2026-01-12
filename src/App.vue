@@ -11,7 +11,9 @@ import { RouterView } from 'vue-router'
     </nav>
   </header>
 
-  <RouterView />
+  <div class="flex-grow-1">
+    <RouterView />
+  </div>
 
   <footer class="footer mt-auto py-3 bg-light text-center">
     <div class="container">
@@ -22,7 +24,7 @@ import { RouterView } from 'vue-router'
 
 <style>
 /* Global styles can go here or in assets/main.css */
-body {
+#app {
   min-height: 100vh;
   display: flex;
   flex-direction: column;

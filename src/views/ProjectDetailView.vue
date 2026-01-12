@@ -58,8 +58,11 @@ const parsedReadme = computed(() => {
     <div v-else>
       <div class="d-flex justify-content-between align-items-center mb-4">
          <h1>{{ repoName }}</h1>
-         <a v-if="repoDetails" :href="repoDetails.html_url" target="_blank" class="btn btn-dark">
-           <i class="bi bi-github"></i> Bekijk op GitHub
+         <a v-if="repoDetails" :href="repoDetails.html_url" target="_blank" class="btn btn-dark d-flex align-items-center gap-2">
+           <i class="bi bi-github"></i>
+           <span>Bekijk op GitHub</span>
+           <span class="vr mx-1"></span>
+           <span><i class="bi bi-star-fill text-warning"></i> {{ repoDetails.stargazers_count }}</span>
          </a>
       </div>
 
@@ -78,27 +81,31 @@ const parsedReadme = computed(() => {
   height: auto;
 }
 .readme-content :deep(pre) {
-  background-color: #212529; /* Dark background for code blocks */
-  color: #f8f9fa;
+  background-color: #000;
+  color: #e0e0e0;
+  border: 1px solid #333;
   padding: 1rem;
   border-radius: 0.25rem;
   overflow-x: auto;
 }
 .readme-content :deep(code) {
-  color: #d63384; /* Bootstrap pink for inline code */
+  color: #00ff00; /* Keep code green for readability against black */
+  font-family: 'Courier New', monospace;
 }
 .readme-content :deep(pre code) {
-  color: inherit; /* Code inside pre blocks inherits light color */
+  color: inherit;
 }
 .readme-content :deep(h1), .readme-content :deep(h2) {
     margin-top: 1.5rem;
     margin-bottom: 1rem;
-    border-bottom: 1px solid #dee2e6;
+    border-bottom: 1px solid #333; /* Subtle border */
     padding-bottom: 0.5rem;
+    color: #e0e0e0; /* Normal text color */
+    font-family: 'Courier New', monospace;
 }
 .readme-content :deep(blockquote) {
-    border-left: 4px solid #dee2e6;
+    border-left: 3px solid #00ff00;
     padding-left: 1rem;
-    color: #6c757d;
+    color: #a0a0a0; /* Muted text */
 }
 </style>

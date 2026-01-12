@@ -1,0 +1,227 @@
+/* Subtle Retro / Modern Dark Theme */
+
+/* Fonts & Core Colors */
+:root {
+  --retro-bg: #121212; /* Softer dark background, not pure black */
+  --retro-card-bg: #1e1e1e;
+  --retro-text-main: #e0e0e0; /* Off-white for readability */
+  --retro-text-muted: #a0a0a0;
+  --retro-accent: #00ff00; /* Neon green accent */
+  --retro-accent-dim: rgba(0, 255, 0, 0.2);
+  --retro-font-mono: 'Courier New', monospace; /* Only for code/headers */
+}
+
+body {
+  background-color: var(--retro-bg) !important;
+  color: #f0f0f0 !important; /* Brighter body text */
+  line-height: 1.6;
+}
+
+/* Headings - Keep the retro font here for flavor */
+h1, h2, h3, h4, h5, h6,
+.h1, .h2, .h3, .h4, .h5, .h6,
+.display-1, .display-2, .display-3, .display-4, .display-5, .display-6 {
+  color: #ffffff !important;
+  font-family: var(--retro-font-mono) !important;
+  font-weight: bold;
+}
+
+/* Subtle accent for brand or key headers */
+h1 span, .navbar-brand {
+    color: var(--retro-accent) !important;
+}
+
+p, span, div {
+  /* Use default Bootstrap font (system-ui) for readability */
+}
+
+.lead, .text-muted {
+  color: var(--retro-text-muted) !important;
+}
+
+/* Card Overrides - Modern Dark Card */
+.card {
+  background-color: var(--retro-card-bg) !important;
+  border: 1px solid #333 !important; /* Subtle border */
+  box-shadow: none;
+  border-radius: 8px;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.card:hover {
+    border-color: var(--retro-accent) !important; /* Green border on hover only */
+    transform: translateY(-2px);
+}
+
+.card-title {
+  color: #fff !important; /* Brighter for headers */
+  font-family: var(--retro-font-mono);
+  font-weight: bold;
+}
+
+.card-text {
+    color: #ffffff !important; /* High contrast for description */
+    line-height: 1.6;
+    font-size: 0.95rem;
+}
+
+.card-subtitle {
+  color: var(--retro-accent) !important; /* Use accent for language to differentiate */
+  font-family: var(--retro-font-mono);
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.card-footer {
+  background-color: transparent !important;
+  border-top: 1px solid #333 !important;
+  color: var(--retro-text-muted) !important;
+}
+
+/* Navbar & Footer Overrides */
+.navbar {
+  background-color: var(--retro-card-bg) !important;
+  border-bottom: 1px solid #333;
+}
+
+.navbar-brand {
+  font-family: var(--retro-font-mono);
+  font-weight: bold;
+}
+
+.nav-link {
+  color: var(--retro-text-main) !important;
+}
+
+.nav-link:hover, .nav-link.active {
+    color: var(--retro-accent) !important;
+}
+
+.navbar-toggler {
+  border-color: #333 !important;
+}
+
+.navbar-toggler-icon {
+    /* Standard white/grey toggler */
+    filter: invert(1); 
+}
+
+footer.bg-light {
+  background-color: var(--retro-card-bg) !important;
+  border-top: 1px solid #333;
+}
+
+/* Button Overrides */
+.btn-primary {
+  background-color: transparent !important;
+  color: var(--retro-accent) !important;
+  border: 1px solid var(--retro-accent) !important;
+  font-family: var(--retro-font-mono);
+  transition: all 0.2s;
+}
+
+.btn-primary:hover {
+  background-color: var(--retro-accent) !important;
+  color: #000 !important; /* Black text on green background */
+  box-shadow: 0 0 10px var(--retro-accent-dim);
+}
+
+.btn-outline-secondary {
+  color: var(--retro-text-muted) !important;
+  border-color: var(--retro-text-muted) !important;
+}
+
+.btn-outline-secondary:hover {
+  color: #fff !important;
+  border-color: #fff !important;
+  background-color: transparent !important;
+}
+
+/* Badge Overrides */
+.badge {
+  background-color: #333 !important;
+  color: var(--retro-accent) !important;
+  border: 1px solid var(--retro-accent-dim);
+  font-family: var(--retro-font-mono);
+}
+
+/* Links */
+a {
+  color: var(--retro-accent);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: #fff;
+  text-decoration: underline;
+}
+
+/* Spinner */
+.spinner-border {
+  color: var(--retro-accent) !important;
+}
+
+/* Alert */
+.alert-danger {
+  background-color: rgba(255, 0, 0, 0.1);
+  color: #ff6b6b;
+  border: 1px solid #ff6b6b;
+}
+
+/* Button Dark Override */
+.btn-dark {
+    background-color: #000 !important;
+    color: #fff !important;
+    border: 1px solid #333 !important;
+}
+.btn-dark:hover {
+    border-color: var(--retro-accent) !important;
+}
+
+/* Generic content overrides */
+.bg-light {
+    background-color: var(--retro-card-bg) !important;
+    color: var(--retro-text-main) !important;
+    border: none !important;
+}
+
+/* Markdown / Code blocks */
+pre {
+    background-color: #000 !important; /* Keep code blocks deep black */
+    border: 1px solid #333;
+    color: var(--retro-text-main) !important;
+    padding: 1rem;
+    font-family: var(--retro-font-mono);
+}
+
+code {
+    color: var(--retro-accent) !important; /* Code stays green */
+    font-family: var(--retro-font-mono);
+}
+
+blockquote {
+    border-left: 3px solid var(--retro-accent) !important;
+    color: var(--retro-text-muted) !important;
+    padding-left: 1rem;
+    font-style: italic;
+}
+
+table {
+    color: var(--retro-text-main) !important;
+    border-color: #333 !important;
+}
+
+/* Canvas from user example - kept as requested but integrated */
+canvas {
+    border: 2px solid var(--retro-accent); /* Thinner border */
+    background: #000000;
+}
+
+@media (max-width: 768px) {
+    canvas {
+        transform: rotate(-90deg);
+        transform-origin: center;
+        width: 100%;
+    }
+}
