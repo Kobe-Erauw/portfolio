@@ -32,7 +32,10 @@ const { data: repositories, status, error } = useQuery({
               {{ repo.description || 'Geen beschrijving beschikbaar.' }}
             </p>
             <div class="mt-3 d-flex justify-content-between align-items-center">
-              <a :href="repo.html_url" target="_blank" class="btn btn-outline-primary btn-sm">Bekijk op GitHub</a>
+              <router-link :to="{ name: 'project-detail', params: { name: repo.name } }" class="btn btn-primary btn-sm">Bekijk Details</router-link>
+              <a :href="repo.html_url" target="_blank" class="btn btn-outline-secondary btn-sm" title="Bekijk op GitHub"><i class="bi bi-github"></i> GitHub</a>
+            </div>
+            <div class="mt-2 text-end">
               <span class="badge bg-secondary">
                 <i class="bi bi-star-fill"></i> ⭐ {{ repo.stargazers_count }}
               </span>
