@@ -5,7 +5,11 @@ Een moderne, interactieve portfolio-website met een subtiele retro-vibe die auto
 ![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
-![Retro Style](https://img.shields.io/badge/Style-Subtle%20Retro-green?style=for-the-badge)
+![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
+
+## 📸 Preview
+
+![Portfolio Preview](assets/preview.png)
 
 ## 🌐 Live Demo
 
@@ -18,6 +22,7 @@ De website is een dynamisch overzicht van al mijn codeer-projecten, live gesynch
 - **Dynamische GitHub Sync**: Haalt automatisch alle openbare repositories op van GitHub.
 - **Subtiele Retro Aesthetic**: Een modern dark theme met neon-groene accenten en retro typografie voor een unieke "hacker-lite" look.
 - **In-App README Viewer**: Bekijk projectdetails zonder de website te verlaten.
+- **Cloudflare Middleware Analytics**: Gebruikt Cloudflare Pages Middleware om bezoekersstatistieken (hits, land, user-agent) veilig te loggen naar een externe API zonder de laadtijd te beïnvloeden.
 - **Smart Asset Handling**: Corrigeert automatisch relatieve paden voor afbeeldingen en links in externe README-bestanden naar de juiste GitHub Raw bronnen.
 - **Interactieve Stats**: GitHub sterren zijn direct geïntegreerd in de navigatieknoppen voor een overzichtelijk beeld.
 - **Efficiënte Caching**: Maakt gebruik van Pinia Colada voor razendsnelle navigatie en minimale API-calls.
@@ -30,6 +35,7 @@ De website is een dynamisch overzicht van al mijn codeer-projecten, live gesynch
 - **Pinia Colada**: Geavanceerde data-fetching en state management.
 - **Bootstrap 5 & Custom CSS**: Krachtige grid-layout gecombineerd met een op maat gemaakt retro-thema.
 - **Bootstrap Icons**: Gebruik van de officiële Bootstrap iconenset voor een consistente UI.
+- **Cloudflare Pages & Middleware**: Hosting platform met serverless middleware voor analytics en request processing.
 - **Marked.js**: Krachtige markdown-to-html conversie met custom renderers.
 
 ## 📁 Project Structuur
