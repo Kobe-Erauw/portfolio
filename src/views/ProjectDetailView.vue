@@ -13,12 +13,14 @@ const username = 'kobe-erauw'
 const { data: repoDetails } = useQuery({
   key: ['repo', repoName],
   query: () => fetchRepository(repoName),
+  staleTime: 1000 * 60,
 })
 
 // Fetch Readme
 const { data: readmeContent, status, error } = useQuery({
   key: ['readme', repoName],
   query: () => fetchReadme(repoName),
+  staleTime: 1000 * 60,
 })
 
 const parsedReadme = computed(() => {

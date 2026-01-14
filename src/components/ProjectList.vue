@@ -5,6 +5,7 @@ import { fetchRepositories } from '../services/github'
 const { data: repositories, status, error } = useQuery({
   key: ['repos'],
   query: fetchRepositories,
+  staleTime: 1000 * 60,
 })
 </script>
 
@@ -34,7 +35,7 @@ const { data: repositories, status, error } = useQuery({
             <div class="mt-3 d-flex justify-content-between align-items-center">
               <router-link :to="{ name: 'project-detail', params: { name: repo.name } }" class="btn btn-primary btn-sm">Bekijk Details</router-link>
               <a :href="repo.html_url" target="_blank" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2" title="Bekijk op GitHub">
-                <i class="bi bi-github"></i> 
+                <i class="bi bi-github"></i>
                 <span>GitHub</span>
                 <span class="vr mx-1"></span>
                 <span><i class="bi bi-star-fill text-warning"></i> {{ repo.stargazers_count }}</span>
