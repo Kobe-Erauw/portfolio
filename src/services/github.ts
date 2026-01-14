@@ -34,7 +34,12 @@ export async function fetchRepositories(): Promise<Repository[]> {
     return repo
   })
 
-  return processedRepos.sort((a, b) => b.stargazers_count - a.stargazers_count)
+  return processedRepos.sort((a, b) => {
+    if (b.stargazers_count !== a.stargazers_count) {
+      return b.stargazers_count - a.stargazers_count
+    }
+    return (b.imageUrl ? 1 : 0) - (a.imageUrl ? 1 : 0)
+  })
 }
 
 export async function fetchReadme(repoName: string): Promise<string | null> {
