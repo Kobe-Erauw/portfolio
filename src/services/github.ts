@@ -7,14 +7,32 @@ export interface Repository {
   language?: string
   updated_at: string
   default_branch?: string
+  imageUrl?: string
 }
 
 export async function fetchRepositories(): Promise<Repository[]> {
-  const response = await fetch(`https://api.github.com/users/kobe-erauw/repos?sort=updated&per_page=100`)
+  const response = await fetch(`https://api.github.com/users/kobe-erauw/repos?per_page=100`)
   if (!response.ok) {
     throw new Error(`GitHub API error: ${response.statusText}`)
   }
-  return response.json()
+  const repos: Repository[] = await response.json()
+
+  const processedRepos = repos
+    .filter((repo) => !repo.description?.includes('[hidden]'))
+    .map((repo) => {
+      const description = repo.description ?? ''
+    const imageRegex = /\[image:\s*(.*?)\s*\]/
+    const match = description.match(imageRegex)
+
+    if (match) {
+      const imageName = match[0].replace('[image:', '').replace(']', '').trim()
+      repo.description = description.replace(imageRegex, '').trim()
+      repo.imageUrl = `https://raw.githubusercontent.com/kobe-erauw/${repo.name}/main/assets/${imageName}`
+    }
+    return repo
+  })
+
+  return processedRepos.sort((a, b) => b.stargazers_count - a.stargazers_count)
 }
 
 export async function fetchReadme(repoName: string): Promise<string | null> {

@@ -29,8 +29,17 @@ const { data: repositories, status, error } = useQuery({
           <div class="card-body d-flex flex-column">
             <h5 class="card-title">{{ repo.name }}</h5>
             <h6 class="card-subtitle mb-2 text-muted" v-if="repo.language">{{ repo.language }}</h6>
+
+            <img
+              v-if="repo.imageUrl"
+              :src="repo.imageUrl"
+              :alt="repo.name"
+              class="img-fluid mb-3 rounded d-block mx-auto"
+              style="max-height: 200px; object-fit: contain"
+            />
+
             <p class="card-text flex-grow-1">
-              {{ repo.description || 'Geen beschrijving beschikbaar.' }}
+              {{ repo.description }}
             </p>
             <div class="mt-3 d-flex justify-content-between align-items-center">
               <router-link :to="{ name: 'project-detail', params: { name: repo.name } }" class="btn btn-primary btn-sm">Bekijk Details</router-link>
