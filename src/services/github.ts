@@ -6,6 +6,8 @@ export interface Repository {
   stargazers_count: number
   language?: string
   updated_at: string
+  pushed_at: string
+  created_at: string
   default_branch?: string
   imageUrl?: string
 }

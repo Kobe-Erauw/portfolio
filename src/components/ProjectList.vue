@@ -1,12 +1,34 @@
 <script setup lang="ts">
 import { useQuery } from '@pinia/colada'
 import { fetchRepositories } from '../services/github'
+import { Tooltip } from 'bootstrap'
+import type { DirectiveBinding } from 'vue'
 
-const { data: repositories, status, error } = useQuery({
+const {
+  data: repositories,
+  status,
+  error,
+} = useQuery({
   key: ['repos'],
   query: fetchRepositories,
   staleTime: 1000 * 60,
 })
+
+const vTooltip = {
+  mounted(el: HTMLElement, binding: DirectiveBinding<string>) {
+    new Tooltip(el, {
+      title: binding.value,
+      trigger: 'hover focus',
+      placement: 'top',
+    })
+  },
+  beforeUnmount(el: HTMLElement) {
+    const tooltip = Tooltip.getInstance(el)
+    if (tooltip) {
+      tooltip.dispose()
+    }
+  },
+}
 </script>
 
 <template>
@@ -42,17 +64,45 @@ const { data: repositories, status, error } = useQuery({
               {{ repo.description }}
             </p>
             <div class="mt-3 d-flex justify-content-between align-items-center">
-              <router-link :to="{ name: 'project-detail', params: { name: repo.name } }" class="btn btn-primary btn-sm">Bekijk Details</router-link>
-              <a :href="repo.html_url" target="_blank" class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2" title="Bekijk op GitHub">
+              <router-link
+                :to="{ name: 'project-detail', params: { name: repo.name } }"
+                class="btn btn-primary btn-sm"
+                >Bekijk Details</router-link
+              >
+              <a
+                :href="repo.html_url"
+                target="_blank"
+                class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2"
+                title="Bekijk op GitHub"
+              >
                 <i class="bi bi-github"></i>
                 <span>GitHub</span>
                 <span class="vr mx-1"></span>
-                <span><i class="bi bi-star-fill text-warning"></i> {{ repo.stargazers_count }}</span>
+                <span
+                  ><i class="bi bi-star-fill text-warning"></i> {{ repo.stargazers_count }}</span
+                >
               </a>
             </div>
           </div>
-          <div class="card-footer text-muted small">
-            Laatst geüpdatet: {{ new Date(repo.updated_at).toLocaleDateString('nl-NL') }}
+          <div
+            class="card-footer text-muted small d-flex justify-content-between align-items-center"
+          >
+            <span
+              class="d-flex align-items-center tooltip-trigger"
+              v-tooltip="'Aangemaakt op'"
+              tabindex="0"
+            >
+              <i class="bi bi-calendar-plus me-1"></i>
+              {{ new Date(repo.created_at).toLocaleDateString('nl-NL') }}
+            </span>
+            <span
+              class="d-flex align-items-center tooltip-trigger"
+              v-tooltip="'Laatste commit op'"
+              tabindex="0"
+            >
+              <i class="bi bi-clock-history me-1"></i>
+              {{ new Date(repo.pushed_at).toLocaleDateString('nl-NL') }}
+            </span>
           </div>
         </div>
       </div>
@@ -64,7 +114,20 @@ const { data: repositories, status, error } = useQuery({
 .card {
   transition: transform 0.2s;
 }
+
 .card:hover {
   transform: translateY(-5px);
+}
+
+.tooltip-trigger {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+  transition: color 0.2s;
+}
+
+.tooltip-trigger:hover,
+.tooltip-trigger:focus {
+  color: var(--retro-accent, #00ff00);
 }
 </style>
