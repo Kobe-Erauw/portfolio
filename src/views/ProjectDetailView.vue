@@ -58,12 +58,12 @@ const parsedReadme = computed(() => {
     </div>
 
     <div v-else>
-      <div class="d-flex justify-content-between align-items-center mb-4">
-         <h1>{{ repoName }}</h1>
-         <a v-if="repoDetails" :href="repoDetails.html_url" target="_blank" class="btn btn-dark d-flex align-items-center gap-2">
+      <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+         <h1 class="m-0 text-break">{{ repoName }}</h1>
+         <a v-if="repoDetails" :href="repoDetails.html_url" target="_blank" class="btn btn-dark d-flex align-items-center gap-2 flex-shrink-0">
            <i class="bi bi-github"></i>
-           <span>Bekijk op GitHub</span>
-           <span class="vr mx-1"></span>
+           <span class="d-none d-md-inline">Bekijk op GitHub</span>
+           <span class="vr mx-1 d-none d-md-inline"></span>
            <span><i class="bi bi-star-fill text-warning"></i> {{ repoDetails.stargazers_count }}</span>
          </a>
       </div>
