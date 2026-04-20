@@ -33,16 +33,16 @@ const vTooltip = {
 
 <template>
   <div class="container py-5">
-    <h2 class="mb-4 text-center">Mijn Projecten</h2>
+    <h2 class="mb-4 text-center">My Projects</h2>
 
     <div v-if="status === 'pending'" class="text-center">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Laden...</span>
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
 
     <div v-else-if="status === 'error'" class="alert alert-danger" role="alert">
-      Er is een fout opgetreden bij het laden van de projecten: {{ error?.message }}
+      An error occurred while loading the projects: {{ error?.message }}
     </div>
 
     <div v-else class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
@@ -67,13 +67,13 @@ const vTooltip = {
               <router-link
                 :to="{ name: 'project-detail', params: { name: repo.name } }"
                 class="btn btn-primary btn-sm"
-                >Bekijk Details</router-link
+                >View Details</router-link
               >
               <a
                 :href="repo.html_url"
                 target="_blank"
                 class="btn btn-outline-secondary btn-sm d-flex align-items-center gap-2"
-                title="Bekijk op GitHub"
+                title="View on GitHub"
               >
                 <i class="bi bi-github"></i>
                 <span>GitHub</span>
@@ -89,7 +89,7 @@ const vTooltip = {
           >
             <span
               class="d-flex align-items-center tooltip-trigger"
-              v-tooltip="'Aangemaakt op'"
+              v-tooltip="'Created on'"
               tabindex="0"
             >
               <i class="bi bi-calendar-plus me-1"></i>
@@ -97,7 +97,7 @@ const vTooltip = {
             </span>
             <span
               class="d-flex align-items-center tooltip-trigger"
-              v-tooltip="'Laatste commit op'"
+              v-tooltip="'Last commit on'"
               tabindex="0"
             >
               <i class="bi bi-clock-history me-1"></i>

@@ -9,7 +9,7 @@ const route = useRoute()
 const repoName = route.params.name as string
 const username = 'kobe-erauw'
 
-// Fetch Repo Details (voor default branch)
+// Fetch Repo Details (for default branch)
 const { data: repoDetails } = useQuery({
   key: ['repo', repoName],
   query: () => fetchRepository(repoName),
@@ -45,16 +45,16 @@ const parsedReadme = computed(() => {
 
 <template>
   <div class="container py-5">
-    <router-link to="/" class="btn btn-outline-secondary mb-4">&larr; Terug naar overzicht</router-link>
+    <router-link to="/" class="btn btn-outline-secondary mb-4">&larr; Back to overview</router-link>
 
     <div v-if="status === 'pending'" class="text-center">
       <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Laden...</span>
+        <span class="visually-hidden">Loading...</span>
       </div>
     </div>
 
     <div v-else-if="status === 'error'" class="alert alert-danger">
-      Kon de details niet laden: {{ error?.message }}
+      Could not load details: {{ error?.message }}
     </div>
 
     <div v-else>
@@ -62,14 +62,14 @@ const parsedReadme = computed(() => {
          <h1 class="m-0 text-break">{{ repoName }}</h1>
          <a v-if="repoDetails" :href="repoDetails.html_url" target="_blank" class="btn btn-dark d-flex align-items-center gap-2 flex-shrink-0">
            <i class="bi bi-github"></i>
-           <span class="d-none d-md-inline">Bekijk op GitHub</span>
+           <span class="d-none d-md-inline">View on GitHub</span>
            <span class="vr mx-1 d-none d-md-inline"></span>
            <span><i class="bi bi-star-fill text-warning"></i> {{ repoDetails.stargazers_count }}</span>
          </a>
       </div>
 
       <div v-if="!readmeContent" class="alert alert-warning">
-        Dit project heeft geen README bestand.
+        This project has no README file.
       </div>
 
       <div v-else class="readme-content p-4 border rounded bg-light" v-html="parsedReadme"></div>

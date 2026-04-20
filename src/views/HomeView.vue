@@ -3,7 +3,7 @@ import { ref, onMounted } from 'vue'
 import ProjectList from '../components/ProjectList.vue'
 
 const typedText = ref('')
-const fullText = "Software & AI student aan Odisee Gent. Gefascineerd door fullstack development, IoT en low-level code."
+const fullText = "Software & AI student at Odisee Ghent. Passionate about AI engineering, fullstack development and building smart systems."
 const typingSpeed = 50
 
 const typeText = () => {
