@@ -7,6 +7,15 @@ import { RouterView } from 'vue-router'
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
         <a class="navbar-brand" href="#">Portfolio</a>
+        <a
+          href="https://www.linkedin.com/in/kobe-erauw"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="nav-link ms-auto d-flex align-items-center gap-2"
+        >
+          <i class="bi bi-linkedin"></i>
+          <span>LinkedIn</span>
+        </a>
       </div>
     </nav>
   </header>
@@ -16,8 +25,17 @@ import { RouterView } from 'vue-router'
   </div>
 
   <footer class="footer mt-auto py-3 bg-light text-center">
-    <div class="container">
+    <div class="container d-flex align-items-center justify-content-center gap-3">
       <span class="text-muted">© 2026 Kobe Erauw</span>
+      <a
+        href="https://www.linkedin.com/in/kobe-erauw"
+        target="_blank"
+        rel="noopener noreferrer"
+        class="text-muted d-flex align-items-center gap-1"
+      >
+        <i class="bi bi-linkedin"></i>
+        <span>LinkedIn</span>
+      </a>
     </div>
   </footer>
 </template>
