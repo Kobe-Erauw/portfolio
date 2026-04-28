@@ -3,7 +3,8 @@ import { useRoute } from 'vue-router'
 import { useQuery } from '@pinia/colada'
 import { fetchReadme, fetchRepository } from '../services/github'
 import { marked } from 'marked'
-import { computed } from 'vue'
+import { computed, watchEffect, onUnmounted } from 'vue'
+import { setTitle, setMetaName, setMetaProperty, setCanonical, injectJsonLd, removeJsonLd, resetTitle, resetMetaDescription } from '../utils/seo'
 
 const route = useRoute()
 const repoName = route.params.name as string
@@ -40,6 +41,49 @@ const parsedReadme = computed(() => {
   }
 
   return marked.parse(readmeContent.value, { renderer })
+})
+
+// Update SEO meta tags and JSON-LD for this specific project
+watchEffect(() => {
+  const description = repoDetails.value?.description
+    ? `${repoDetails.value.description} – a project by Kobe Erauw.`
+    : `${repoName} – a project by Kobe Erauw. Software & AI developer from Ghent.`
+
+  setTitle(`${repoName} – Kobe Erauw`)
+  setMetaName('description', description)
+  setMetaProperty('og:title', `${repoName} – Kobe Erauw`)
+  setMetaProperty('og:description', description)
+  setMetaProperty('og:url', `https://kobeerauw.com/project/${repoName}`)
+  setCanonical(`/project/${repoName}`)
+
+  if (repoDetails.value) {
+    injectJsonLd('project-detail', {
+      '@context': 'https://schema.org',
+      '@type': 'SoftwareSourceCode',
+      'name': repoName,
+      'description': repoDetails.value.description || undefined,
+      'url': `https://kobeerauw.com/project/${repoName}`,
+      'codeRepository': repoDetails.value.html_url,
+      'programmingLanguage': repoDetails.value.language || undefined,
+      'dateCreated': repoDetails.value.created_at,
+      'dateModified': repoDetails.value.pushed_at,
+      'author': {
+        '@type': 'Person',
+        'name': 'Kobe Erauw',
+        'url': 'https://kobeerauw.com',
+        'sameAs': [
+          'https://github.com/kobe-erauw',
+          'https://www.linkedin.com/in/kobe-erauw',
+        ],
+      },
+    })
+  }
+})
+
+onUnmounted(() => {
+  resetTitle()
+  resetMetaDescription()
+  removeJsonLd('project-detail')
 })
 </script>
 
@@ -107,7 +151,3 @@ const parsedReadme = computed(() => {
 }
 .readme-content :deep(blockquote) {
     border-left: 3px solid #00ff00;
-    padding-left: 1rem;
-    color: #a0a0a0; /* Muted text */
-}
-</style>
