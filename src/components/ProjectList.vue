@@ -121,4 +121,45 @@ const vTooltip = {
           >
             <span
               class="d-flex align-items-center tooltip-trigger"
-              v-tooltip=
+              v-tooltip="'Created on'"
+              tabindex="0"
+            >
+              <i class="bi bi-calendar-plus me-1"></i>
+              {{ new Date(repo.created_at).toLocaleDateString('nl-NL') }}
+            </span>
+            <span
+              class="d-flex align-items-center tooltip-trigger"
+              v-tooltip="'Last commit on'"
+              tabindex="0"
+            >
+              <i class="bi bi-clock-history me-1"></i>
+              {{ new Date(repo.pushed_at).toLocaleDateString('nl-NL') }}
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.card {
+  transition: transform 0.2s;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+.tooltip-trigger {
+  text-decoration: underline dotted;
+  text-underline-offset: 3px;
+  cursor: help;
+  transition: color 0.2s;
+}
+
+.tooltip-trigger:hover,
+.tooltip-trigger:focus {
+  color: var(--retro-accent, #00ff00);
+}
+</style>

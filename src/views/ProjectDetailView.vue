@@ -157,3 +157,7 @@ onUnmounted(() => {
 }
 .readme-content :deep(blockquote) {
     border-left: 3px solid #00ff00;
+    padding-left: 1rem;
+    color: #a0a0a0; /* Muted text */
+}
+</style>
