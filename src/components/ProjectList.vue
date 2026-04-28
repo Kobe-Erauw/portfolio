@@ -1,8 +1,10 @@
 <script setup lang="ts">
+import { watchEffect, onUnmounted } from 'vue'
 import { useQuery } from '@pinia/colada'
 import { fetchRepositories } from '../services/github'
 import { Tooltip } from 'bootstrap'
 import type { DirectiveBinding } from 'vue'
+import { injectJsonLd, removeJsonLd } from '../utils/seo'
 
 const {
   data: repositories,
@@ -13,6 +15,33 @@ const {
   query: fetchRepositories,
   staleTime: 1000 * 60,
 })
+
+// Inject ItemList schema once repos load so Google can display them as rich results.
+// Lives here rather than in HomeView to avoid a duplicate useQuery call.
+watchEffect(() => {
+  if (!repositories.value?.length) return
+
+  injectJsonLd('projects-list', {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    'name': "Kobe Erauw's Projects",
+    'description': 'A collection of software and AI projects by Kobe Erauw.',
+    'url': 'https://kobeerauw.com/',
+    'numberOfItems': repositories.value.length,
+    'itemListElement': repositories.value.map((repo, i) => ({
+      '@type': 'ListItem',
+      'position': i + 1,
+      'item': {
+        '@type': 'SoftwareSourceCode',
+        'name': repo.name,
+        'description': repo.description || undefined,
+        'url': `https://kobeerauw.com/project/${repo.name}`,
+      },
+    })),
+  })
+})
+
+onUnmounted(() => removeJsonLd('projects-list'))
 
 const vTooltip = {
   mounted(el: HTMLElement, binding: DirectiveBinding<string>) {
@@ -89,45 +118,4 @@ const vTooltip = {
           >
             <span
               class="d-flex align-items-center tooltip-trigger"
-              v-tooltip="'Created on'"
-              tabindex="0"
-            >
-              <i class="bi bi-calendar-plus me-1"></i>
-              {{ new Date(repo.created_at).toLocaleDateString('nl-NL') }}
-            </span>
-            <span
-              class="d-flex align-items-center tooltip-trigger"
-              v-tooltip="'Last commit on'"
-              tabindex="0"
-            >
-              <i class="bi bi-clock-history me-1"></i>
-              {{ new Date(repo.pushed_at).toLocaleDateString('nl-NL') }}
-            </span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</template>
-
-<style scoped>
-.card {
-  transition: transform 0.2s;
-}
-
-.card:hover {
-  transform: translateY(-5px);
-}
-
-.tooltip-trigger {
-  text-decoration: underline dotted;
-  text-underline-offset: 3px;
-  cursor: help;
-  transition: color 0.2s;
-}
-
-.tooltip-trigger:hover,
-.tooltip-trigger:focus {
-  color: var(--retro-accent, #00ff00);
-}
-</style>
+              v-tooltip=
