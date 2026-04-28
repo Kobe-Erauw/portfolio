@@ -44,41 +44,46 @@ const parsedReadme = computed(() => {
   return DOMPurify.sanitize(marked.parse(readmeContent.value, { renderer }) as string)
 })
 
-// Update SEO meta tags and JSON-LD for this specific project
+// Navigation tags are set immediately (don't depend on API data)
 watchEffect(() => {
-  const description = repoDetails.value?.description
+  setTitle(`${repoName} – Kobe Erauw`)
+  setMetaProperty('og:title', `${repoName} – Kobe Erauw`)
+  setMetaProperty('og:url', `https://kobeerauw.com/project/${repoName}`)
+  setCanonical(`/project/${repoName}`)
+})
+
+// Description and structured data are set once the GitHub API has responded,
+// so Google always sees the real project description rather than a fallback.
+watchEffect(() => {
+  if (!repoDetails.value) return
+
+  const description = repoDetails.value.description
     ? `${repoDetails.value.description} – a project by Kobe Erauw.`
     : `${repoName} – a project by Kobe Erauw. Software & AI developer from Ghent.`
 
-  setTitle(`${repoName} – Kobe Erauw`)
   setMetaName('description', description)
-  setMetaProperty('og:title', `${repoName} – Kobe Erauw`)
   setMetaProperty('og:description', description)
-  setMetaProperty('og:url', `https://kobeerauw.com/project/${repoName}`)
-  setCanonical(`/project/${repoName}`)
 
-  if (repoDetails.value) {
-    injectJsonLd('project-detail', {
-      '@context': 'https://schema.org',
-      '@type': 'SoftwareSourceCode',
-      'name': repoName,
-      'description': repoDetails.value.description || undefined,
-      'url': `https://kobeerauw.com/project/${repoName}`,
-      'codeRepository': repoDetails.value.html_url,
-      'programmingLanguage': repoDetails.value.language || undefined,
-      'dateCreated': repoDetails.value.created_at,
-      'dateModified': repoDetails.value.pushed_at,
-      'author': {
-        '@type': 'Person',
-        'name': 'Kobe Erauw',
-        'url': 'https://kobeerauw.com',
-        'sameAs': [
-          'https://github.com/kobe-erauw',
-          'https://www.linkedin.com/in/kobe-erauw',
-        ],
-      },
-    })
-  }
+  injectJsonLd('project-detail', {
+    '@context': 'https://schema.org',
+    '@type': 'SoftwareSourceCode',
+    'name': repoName,
+    'description': repoDetails.value.description || undefined,
+    'url': `https://kobeerauw.com/project/${repoName}`,
+    'codeRepository': repoDetails.value.html_url,
+    'programmingLanguage': repoDetails.value.language || undefined,
+    'dateCreated': repoDetails.value.created_at,
+    'dateModified': repoDetails.value.pushed_at,
+    'author': {
+      '@type': 'Person',
+      'name': 'Kobe Erauw',
+      'url': 'https://kobeerauw.com',
+      'sameAs': [
+        'https://github.com/kobe-erauw',
+        'https://www.linkedin.com/in/kobe-erauw',
+      ],
+    },
+  })
 })
 
 onUnmounted(() => {
