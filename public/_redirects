@@ -1,0 +1,4 @@
+# SPA fallback — serve index.html for all routes so Vue Router
+# handles client-side navigation on direct URL access or refresh.
+# Without this, /project/:name returns a 404 on Cloudflare Pages.
+/*    /index.html   200
