@@ -84,7 +84,10 @@ const vTooltip = {
             <img
               v-if="repo.imageUrl"
               :src="repo.imageUrl"
-              :alt="repo.name"
+              :alt="`Preview of ${repo.name}`"
+              width="400"
+              height="200"
+              loading="lazy"
               class="img-fluid mb-3 rounded d-block mx-auto"
               style="max-height: 200px; object-fit: contain"
             />
