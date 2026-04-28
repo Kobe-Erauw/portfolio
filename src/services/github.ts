@@ -13,7 +13,7 @@ export interface Repository {
 }
 
 export async function fetchRepositories(): Promise<Repository[]> {
-  const response = await fetch(`https://api.github.com/users/kobe-erauw/repos?per_page=100`)
+  const response = await fetch(`/api/github/users/kobe-erauw/repos?per_page=100`)
   if (!response.ok) {
     throw new Error(`GitHub API error: ${response.statusText}`)
   }
@@ -44,7 +44,7 @@ export async function fetchRepositories(): Promise<Repository[]> {
 
 export async function fetchReadme(repoName: string): Promise<string | null> {
   try {
-    const response = await fetch(`https://api.github.com/repos/kobe-erauw/${repoName}/readme`, {
+    const response = await fetch(`/api/github/repos/kobe-erauw/${repoName}/readme`, {
       headers: {
         Accept: 'application/vnd.github.raw',
       },
@@ -62,7 +62,7 @@ export async function fetchReadme(repoName: string): Promise<string | null> {
 
 export async function fetchRepository(repoName: string): Promise<Repository | null> {
   try {
-    const response = await fetch(`https://api.github.com/repos/kobe-erauw/${repoName}`)
+    const response = await fetch(`/api/github/repos/kobe-erauw/${repoName}`)
 		if (!response.ok) return null
     return await response.json()
   } catch (error) {

@@ -29,6 +29,15 @@ function generateSitemapPlugin(): Plugin {
       try {
         const res = await fetch(
           `https://api.github.com/users/${GITHUB_USER}/repos?per_page=100`,
+          {
+            headers: {
+              'User-Agent': 'kobe-erauw-portfolio',
+              Accept: 'application/vnd.github+json',
+              ...(process.env.GITHUB_TOKEN
+                ? { Authorization: `Bearer ${process.env.GITHUB_TOKEN}` }
+                : {}),
+            },
+          },
         )
         if (!res.ok) throw new Error(`GitHub API responded with ${res.status}`)
         const data = (await res.json()) as GithubRepo[]
