@@ -4,6 +4,7 @@ import { useQuery } from '@pinia/colada'
 import { fetchReadme, fetchRepository } from '../services/github'
 import { marked } from 'marked'
 import { computed, watchEffect, onUnmounted } from 'vue'
+import DOMPurify from 'dompurify'
 import { setTitle, setMetaName, setMetaProperty, setCanonical, injectJsonLd, removeJsonLd, resetTitle, resetMetaDescription } from '../utils/seo'
 
 const route = useRoute()
@@ -40,7 +41,7 @@ const parsedReadme = computed(() => {
     return `<img src="${href}" alt="${text}" title="${title || ''}" class="img-fluid" />`
   }
 
-  return marked.parse(readmeContent.value, { renderer })
+  return DOMPurify.sanitize(marked.parse(readmeContent.value, { renderer }) as string)
 })
 
 // Update SEO meta tags and JSON-LD for this specific project
