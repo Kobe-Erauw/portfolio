@@ -1,0 +1,103 @@
+---
+/** One page per project: /project/<repo name> */
+import type { GetStaticPaths, InferGetStaticPropsType } from 'astro'
+import Base from '../../layouts/Base.astro'
+import { getProjects } from '../../lib/github'
+import { renderReadme } from '../../lib/markdown'
+import { AUTHOR, SITE_URL } from '../../lib/site'
+
+export const getStaticPaths = (async () => {
+  const projects = await getProjects()
+  return projects.map((project) => ({ params: { name: project.name }, props: { project } }))
+}) satisfies GetStaticPaths
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>
+
+const { project } = Astro.props
+const path = `/project/${project.name}`
+const title = `${project.displayName} – ${AUTHOR}`
+const description = project.description
+  ? `${project.description.replace(/[.\s]+$/, '')} – a project by ${AUTHOR}.`
+  : `${project.displayName} – a project by ${AUTHOR}, Software & AI developer from Ghent.`
+const readmeHtml = project.readme
+  ? renderReadme(project.readme, project.name, project.branch)
+  : null
+
+// Breadcrumb shown by Google instead of the bare URL: kobeerauw.com › Projects › <name>
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Projects', item: `${SITE_URL}/` },
+      { '@type': 'ListItem', position: 2, name: project.displayName, item: `${SITE_URL}${path}` },
+    ],
+  },
+]
+---
+
+<Base title={title} description={description} path={path} image={project.imageUrl} schema={schema}>
+  <div class="container py-5">
+    <a href="/" class="btn btn-outline-secondary mb-4">
+      &larr; Back to overview
+    </a>
+
+    <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
+      <h1 class="m-0 text-break">{project.name}</h1>
+      <a
+        href={project.githubUrl}
+        target="_blank"
+        class="btn btn-dark d-flex align-items-center gap-2 flex-shrink-0"
+      >
+        <i class="bi bi-github"></i>
+        <span class="d-none d-md-inline">View on GitHub</span>
+        <span class="vr mx-1 d-none d-md-inline"></span>
+        <span>
+          <i class="bi bi-star-fill text-warning"></i> {project.stars}
+        </span>
+      </a>
+    </div>
+
+    {readmeHtml ? (
+      <div class="readme-content p-4 border rounded bg-light" set:html={readmeHtml} />
+    ) : (
+      <div class="alert alert-warning">This project has no README file.</div>
+    )}
+  </div>
+</Base>
+
+<style>
+  .readme-content :global(img) {
+    max-width: 100%;
+    height: auto;
+  }
+  .readme-content :global(pre) {
+    background-color: #000;
+    color: #e0e0e0;
+    border: 1px solid #333;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    overflow-x: auto;
+  }
+  .readme-content :global(code) {
+    color: #00ff00; /* Keep code green for readability against black */
+    font-family: 'Courier New', monospace;
+  }
+  .readme-content :global(pre code) {
+    color: inherit;
+  }
+  .readme-content :global(h1),
+  .readme-content :global(h2) {
+    margin-top: 1.5rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #333;
+    padding-bottom: 0.5rem;
+    color: #e0e0e0;
+    font-family: 'Courier New', monospace;
+  }
+  .readme-content :global(blockquote) {
+    border-left: 3px solid #00ff00;
+    padding-left: 1rem;
+    color: #a0a0a0;
+  }
+</style>
