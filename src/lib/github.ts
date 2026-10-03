@@ -91,7 +91,7 @@ async function fetchReadme(repoName: string, branch: string): Promise<string | n
   const raw = await request(
     `https://raw.githubusercontent.com/${GITHUB_USER}/${repoName}/${branch}/README.md`,
   )
-  if (raw.ok) return raw.text()
+  if (raw.ok) return readText(raw)
 
   // Other file names (readme.md, README.rst, …): the API finds those for us
   const api = await request(
@@ -100,7 +100,23 @@ async function fetchReadme(repoName: string, branch: string): Promise<string | n
   )
   if (api.status === 404) return null
   if (!api.ok) throw new Error(`GitHub API responded with ${api.status} for ${repoName}/readme`)
-  return api.text()
+  return readText(api)
+}
+
+/**
+ * Response body as text, honouring a byte order mark. READMEs saved by some Windows
+ * tools are UTF-16, but fetch's .text() always decodes as UTF-8, which turns them into
+ * garbage (no headings, lists or code blocks). TextDecoder also drops the BOM itself.
+ */
+async function readText(res: Response): Promise<string> {
+  const bytes = new Uint8Array(await res.arrayBuffer())
+  const encoding =
+    bytes[0] === 0xff && bytes[1] === 0xfe
+      ? 'utf-16le'
+      : bytes[0] === 0xfe && bytes[1] === 0xff
+        ? 'utf-16be'
+        : 'utf-8'
+  return new TextDecoder(encoding).decode(bytes)
 }
 
 /** GET with the GitHub token (if set) and up to 3 attempts for temporary errors. */
