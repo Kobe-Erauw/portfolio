@@ -3,13 +3,13 @@ import Base from '../layouts/Base.astro'
 import ProjectCard from '../components/ProjectCard.astro'
 import Typewriter from '../components/Typewriter.astro'
 import { getProjects } from '../lib/github'
+import { PERSON_SCHEMA } from '../lib/about'
 import {
   AUTHOR,
   GITHUB_URL,
   HOME_DESCRIPTION,
   HOME_TITLE,
   INTRO,
-  LINKEDIN_URL,
   SITE_NAME,
   SITE_URL,
 } from '../lib/site'
@@ -18,28 +18,7 @@ const projects = await getProjects()
 
 // Tells Google who this site is about and what the site is called
 const schema = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: AUTHOR,
-    url: SITE_URL,
-    jobTitle: 'Software & AI Student',
-    description:
-      'Software & AI student at Odisee Ghent, passionate about AI engineering, fullstack development and building smart systems.',
-    alumniOf: {
-      '@type': 'CollegeOrUniversity',
-      name: 'Odisee',
-      address: { '@type': 'PostalAddress', addressLocality: 'Ghent', addressCountry: 'BE' },
-    },
-    knowsAbout: [
-      'Artificial Intelligence',
-      'Fullstack Development',
-      'Software Engineering',
-      'TypeScript',
-      'Vue.js',
-    ],
-    sameAs: [GITHUB_URL, LINKEDIN_URL],
-  },
+  { '@context': 'https://schema.org', ...PERSON_SCHEMA },
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -57,6 +36,19 @@ const schema = [
       </h1>
       <div class="col-lg-6 mx-auto">
         <Typewriter text={INTRO} />
+        <div class="d-flex justify-content-center gap-2">
+          <a href="/about" class="btn btn-primary">
+            About me &rarr;
+          </a>
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-outline-secondary d-flex align-items-center gap-2"
+          >
+            <i class="bi bi-github"></i> GitHub
+          </a>
+        </div>
       </div>
     </div>
 

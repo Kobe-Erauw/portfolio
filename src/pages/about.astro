@@ -1,0 +1,158 @@
+---
+/** /about: who I am. The texts live in src/lib/about.ts. */
+import Base from '../layouts/Base.astro'
+import {
+  ABOUT_DESCRIPTION,
+  ABOUT_TITLE,
+  EDUCATION,
+  EXPERIENCE,
+  HOBBIES,
+  INTRO_PARAGRAPHS,
+  LANGUAGES,
+  LOCATION,
+  PERSON_SCHEMA,
+  SKILLS,
+} from '../lib/about'
+import { GITHUB_URL, LINKEDIN_URL } from '../lib/site'
+
+// ProfilePage: tells Google this page is about one person
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'ProfilePage', mainEntity: PERSON_SCHEMA },
+]
+---
+
+<Base title={ABOUT_TITLE} description={ABOUT_DESCRIPTION} path="/about" schema={schema}>
+  <main class="container py-5">
+    <h1 class="display-5 fw-bold mb-4">
+      <span>&gt;</span> About me
+    </h1>
+
+    <div class="row mb-5">
+      <div class="col-lg-8">
+        {INTRO_PARAGRAPHS.map((text) => (
+          <p class="lead about-intro">{text}</p>
+        ))}
+        <p class="text-muted mb-0">
+          <i class="bi bi-geo-alt me-1"></i>
+          {LOCATION}
+        </p>
+      </div>
+    </div>
+
+    <div class="row gx-4 gx-lg-5 gy-4">
+      <div class="col-lg-7">
+        <section class="mb-5">
+          <h2 class="h4 mb-4">Experience</h2>
+          {EXPERIENCE.map((job) => (
+            <div class="timeline-item">
+              <h3 class="h6 mb-1">{job.role}</h3>
+              <div class="timeline-meta">
+                <span class="text-accent">{job.company}</span> · {job.period}
+              </div>
+              {job.description && <p class="mt-2 mb-0">{job.description}</p>}
+            </div>
+          ))}
+        </section>
+
+        <section class="mb-5">
+          <h2 class="h4 mb-4">Education</h2>
+          <div class="timeline-item">
+            <h3 class="h6 mb-1">{EDUCATION.degree}</h3>
+            <div class="timeline-meta">
+              <span class="text-accent">{EDUCATION.school}</span> · {EDUCATION.period}
+            </div>
+            <p class="mt-2 mb-0">Specialisation: {EDUCATION.specialisation}</p>
+          </div>
+        </section>
+      </div>
+
+      <div class="col-lg-5">
+        <section class="mb-5">
+          <h2 class="h4 mb-3">Skills</h2>
+          <div class="d-flex flex-wrap gap-2">
+            {SKILLS.map((skill) => (
+              <span class="badge fs-6 fw-normal">{skill}</span>
+            ))}
+          </div>
+        </section>
+
+        <section class="mb-5">
+          <h2 class="h4 mb-3">Languages</h2>
+          <ul class="list-unstyled mb-0">
+            {LANGUAGES.map((language) => (
+              <li>
+                {language.name} <span class="text-muted">· {language.level}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+
+        <section class="mb-5">
+          <h2 class="h4 mb-3">Outside of work</h2>
+          <p class="mb-0">{HOBBIES}</p>
+        </section>
+
+        <section>
+          <h2 class="h4 mb-3">Contact</h2>
+          <p>The easiest way to reach me is via LinkedIn.</p>
+          <div class="d-flex flex-wrap gap-2">
+            <a
+              href={LINKEDIN_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-primary d-flex align-items-center gap-2"
+            >
+              <i class="bi bi-linkedin"></i> LinkedIn
+            </a>
+            <a
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="btn btn-outline-secondary d-flex align-items-center gap-2"
+            >
+              <i class="bi bi-github"></i> GitHub
+            </a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .about-intro {
+    color: var(--retro-text-main) !important;
+  }
+
+  .text-accent {
+    color: var(--retro-accent);
+  }
+
+  .timeline-item {
+    border-left: 2px solid var(--retro-accent-dim);
+    padding: 0 0 1.5rem 1.25rem;
+    position: relative;
+  }
+
+  /* Green dot on the timeline line */
+  .timeline-item::before {
+    content: '';
+    position: absolute;
+    left: -6px;
+    top: 0.35rem;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--retro-accent);
+  }
+
+  .timeline-item:last-child {
+    padding-bottom: 0;
+  }
+
+  .timeline-meta {
+    color: var(--retro-text-muted);
+    font-family: var(--retro-font-mono);
+    font-size: 0.9rem;
+  }
+</style>

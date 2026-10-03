@@ -9,13 +9,18 @@ export const GET: APIRoute = async () => {
 
   const urls = [
     { loc: `${SITE_URL}/`, lastmod: day(new Date().toISOString()) },
+    { loc: `${SITE_URL}/about` },
     ...projects.map((p) => ({ loc: `${SITE_URL}/project/${p.name}`, lastmod: day(p.pushedAt) })),
   ]
 
   const xml = [
     '<?xml version="1.0" encoding="UTF-8"?>',
     '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">',
-    ...urls.map((u) => `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod></url>`),
+    ...urls.map((u) =>
+      u.lastmod
+        ? `  <url><loc>${u.loc}</loc><lastmod>${u.lastmod}</lastmod></url>`
+        : `  <url><loc>${u.loc}</loc></url>`,
+    ),
     '</urlset>',
     '',
   ].join('\n')
