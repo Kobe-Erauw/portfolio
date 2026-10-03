@@ -1,5 +1,6 @@
 ---
 /** /about: who I am. The texts live in src/lib/about.ts. */
+import { Image } from 'astro:assets'
 import Base from '../layouts/Base.astro'
 import {
   ABOUT_DESCRIPTION,
@@ -13,22 +14,47 @@ import {
   PERSON_SCHEMA,
   SKILLS,
 } from '../lib/about'
+import { getPhotoUrl, photo, PHOTO_ALT } from '../lib/photo'
 import { GITHUB_URL, LINKEDIN_URL } from '../lib/site'
+
+const photoUrl = await getPhotoUrl()
 
 // ProfilePage: tells Google this page is about one person
 const schema = [
-  { '@context': 'https://schema.org', '@type': 'ProfilePage', mainEntity: PERSON_SCHEMA },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'ProfilePage',
+    mainEntity: { ...PERSON_SCHEMA, image: photoUrl },
+  },
 ]
 ---
 
-<Base title={ABOUT_TITLE} description={ABOUT_DESCRIPTION} path="/about" schema={schema}>
+<Base
+  title={ABOUT_TITLE}
+  description={ABOUT_DESCRIPTION}
+  path="/about"
+  image={photoUrl}
+  imageStyle="small"
+  schema={schema}
+>
   <main class="container py-5">
     <h1 class="display-5 fw-bold mb-4">
       <span>&gt;</span> About me
     </h1>
 
-    <div class="row mb-5">
-      <div class="col-lg-8">
+    <div class="row align-items-center gy-4 mb-5">
+      <div class="col-md-4 col-lg-3 text-center">
+        <Image
+          src={photo}
+          alt={PHOTO_ALT}
+          width={240}
+          height={240}
+          densities={[1, 2]}
+          loading="eager"
+          class="profile-photo"
+        />
+      </div>
+      <div class="col-md-8 col-lg-7">
         {INTRO_PARAGRAPHS.map((text) => (
           <p class="lead about-intro">{text}</p>
         ))}
@@ -120,6 +146,15 @@ const schema = [
 </Base>
 
 <style>
+  .profile-photo {
+    width: 240px;
+    max-width: 100%;
+    height: auto;
+    border-radius: 50%;
+    border: 3px solid var(--retro-accent);
+    box-shadow: 0 0 24px var(--retro-accent-dim);
+  }
+
   .about-intro {
     color: var(--retro-text-main) !important;
   }

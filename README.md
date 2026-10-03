@@ -55,6 +55,7 @@ De website is een overzicht van al mijn codeer-projecten, automatisch opgebouwd 
 │   ├── lib/
 │   │   ├── site.ts             # Naam, teksten en links van de site
 │   │   ├── about.ts            # Teksten van de "About me"-pagina (ervaring, opleiding, skills)
+│   │   ├── photo.ts            # Profielfoto (bron: src/assets/kobe-erauw.jpg)
 │   │   ├── github.ts           # Repositories + README's ophalen tijdens de build
 │   │   └── markdown.ts         # README → veilige HTML
 │   └── styles/retro.css        # Custom retro-thema
