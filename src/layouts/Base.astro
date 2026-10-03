@@ -15,11 +15,13 @@ interface Props {
   path?: string
   /** Preview image for social media */
   image?: string
+  /** Wide preview (screenshots) or small square one next to the text (profile photo) */
+  imageStyle?: 'large' | 'small'
   /** Structured data (JSON-LD) for this page */
   schema?: object[]
 }
 
-const { title, description, path, image, schema = [] } = Astro.props
+const { title, description, path, image, imageStyle = 'large', schema = [] } = Astro.props
 const url = path ? new URL(path, SITE_URL).href : undefined
 // "<" escaped so text in the data can never close the <script> tag
 const toJsonLd = (data: object) => JSON.stringify(data).replace(/</g, '\\u003c')
@@ -45,7 +47,10 @@ const toJsonLd = (data: object) => JSON.stringify(data).replace(/</g, '\\u003c')
     <meta property="og:description" content={description} />
     {url && <meta property="og:url" content={url} />}
     {image && <meta property="og:image" content={image} />}
-    <meta name="twitter:card" content={image ? 'summary_large_image' : 'summary'} />
+    <meta
+      name="twitter:card"
+      content={image && imageStyle === 'large' ? 'summary_large_image' : 'summary'}
+    />
 
     {schema.map((data) => (
       <script type="application/ld+json" set:html={toJsonLd(data)} />
@@ -59,10 +64,17 @@ const toJsonLd = (data: object) => JSON.stringify(data).replace(/</g, '\\u003c')
             Portfolio
           </a>
           <a
+            href="/about"
+            class:list={['nav-link ms-auto me-4', { active: path === '/about' }]}
+            aria-current={path === '/about' ? 'page' : undefined}
+          >
+            About
+          </a>
+          <a
             href={LINKEDIN_URL}
             target="_blank"
             rel="noopener noreferrer"
-            class="nav-link ms-auto d-flex align-items-center gap-2"
+            class="nav-link d-flex align-items-center gap-2"
           >
             <i class="bi bi-linkedin"></i>
             <span>LinkedIn</span>

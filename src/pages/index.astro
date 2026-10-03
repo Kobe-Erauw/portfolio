@@ -3,43 +3,25 @@ import Base from '../layouts/Base.astro'
 import ProjectCard from '../components/ProjectCard.astro'
 import Typewriter from '../components/Typewriter.astro'
 import { getProjects } from '../lib/github'
+import { Image } from 'astro:assets'
+import { PERSON_SCHEMA } from '../lib/about'
+import { getPhotoUrl, photo, PHOTO_ALT } from '../lib/photo'
 import {
   AUTHOR,
   GITHUB_URL,
   HOME_DESCRIPTION,
   HOME_TITLE,
   INTRO,
-  LINKEDIN_URL,
   SITE_NAME,
   SITE_URL,
 } from '../lib/site'
 
 const projects = await getProjects()
+const photoUrl = await getPhotoUrl()
 
 // Tells Google who this site is about and what the site is called
 const schema = [
-  {
-    '@context': 'https://schema.org',
-    '@type': 'Person',
-    name: AUTHOR,
-    url: SITE_URL,
-    jobTitle: 'Software & AI Student',
-    description:
-      'Software & AI student at Odisee Ghent, passionate about AI engineering, fullstack development and building smart systems.',
-    alumniOf: {
-      '@type': 'CollegeOrUniversity',
-      name: 'Odisee',
-      address: { '@type': 'PostalAddress', addressLocality: 'Ghent', addressCountry: 'BE' },
-    },
-    knowsAbout: [
-      'Artificial Intelligence',
-      'Fullstack Development',
-      'Software Engineering',
-      'TypeScript',
-      'Vue.js',
-    ],
-    sameAs: [GITHUB_URL, LINKEDIN_URL],
-  },
+  { '@context': 'https://schema.org', ...PERSON_SCHEMA, image: photoUrl },
   {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
@@ -49,14 +31,43 @@ const schema = [
 ]
 ---
 
-<Base title={HOME_TITLE} description={HOME_DESCRIPTION} path="/" schema={schema}>
+<Base
+  title={HOME_TITLE}
+  description={HOME_DESCRIPTION}
+  path="/"
+  image={photoUrl}
+  imageStyle="small"
+  schema={schema}
+>
   <main>
     <div class="px-4 py-5 my-5 text-center">
+      <Image
+        src={photo}
+        alt={PHOTO_ALT}
+        width={140}
+        height={140}
+        densities={[1, 2]}
+        loading="eager"
+        class="hero-photo mb-4"
+      />
       <h1 class="display-5 fw-bold">
         <span class="text-accent">&gt;</span> {AUTHOR}
       </h1>
       <div class="col-lg-6 mx-auto">
         <Typewriter text={INTRO} />
+        <div class="d-flex justify-content-center gap-2">
+          <a href="/about" class="btn btn-primary">
+            About me &rarr;
+          </a>
+          <a
+            href={GITHUB_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-outline-secondary d-flex align-items-center gap-2"
+          >
+            <i class="bi bi-github"></i> GitHub
+          </a>
+        </div>
       </div>
     </div>
 
@@ -72,6 +83,12 @@ const schema = [
 </Base>
 
 <style>
+  .hero-photo {
+    border-radius: 50%;
+    border: 3px solid var(--retro-accent);
+    box-shadow: 0 0 24px var(--retro-accent-dim);
+  }
+
   .text-accent {
     color: var(--retro-accent);
   }

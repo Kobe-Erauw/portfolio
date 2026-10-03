@@ -45,6 +45,7 @@ De website is een overzicht van al mijn codeer-projecten, automatisch opgebouwd 
 │   │   └── Base.astro          # Layout + de ENIGE plek voor <head> (titel, beschrijving, SEO)
 │   ├── pages/
 │   │   ├── index.astro         # Homepage met intro en projectkaarten
+│   │   ├── about.astro         # "About me"-pagina
 │   │   ├── project/[name].astro # Eén pagina per project
 │   │   ├── 404.astro           # Pagina voor onbestaande URL's
 │   │   └── sitemap.xml.ts      # /sitemap.xml
@@ -53,6 +54,8 @@ De website is een overzicht van al mijn codeer-projecten, automatisch opgebouwd 
 │   │   └── Typewriter.astro    # Typ-animatie van de intro
 │   ├── lib/
 │   │   ├── site.ts             # Naam, teksten en links van de site
+│   │   ├── about.ts            # Teksten van de "About me"-pagina (ervaring, opleiding, skills)
+│   │   ├── photo.ts            # Profielfoto (bron: src/assets/kobe-erauw.jpg)
 │   │   ├── github.ts           # Repositories + README's ophalen tijdens de build
 │   │   └── markdown.ts         # README → veilige HTML
 │   └── styles/retro.css        # Custom retro-thema
