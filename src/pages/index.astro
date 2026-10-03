@@ -1,0 +1,78 @@
+---
+import Base from '../layouts/Base.astro'
+import ProjectCard from '../components/ProjectCard.astro'
+import Typewriter from '../components/Typewriter.astro'
+import { getProjects } from '../lib/github'
+import {
+  AUTHOR,
+  GITHUB_URL,
+  HOME_DESCRIPTION,
+  HOME_TITLE,
+  INTRO,
+  LINKEDIN_URL,
+  SITE_NAME,
+  SITE_URL,
+} from '../lib/site'
+
+const projects = await getProjects()
+
+// Tells Google who this site is about and what the site is called
+const schema = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name: AUTHOR,
+    url: SITE_URL,
+    jobTitle: 'Software & AI Student',
+    description:
+      'Software & AI student at Odisee Ghent, passionate about AI engineering, fullstack development and building smart systems.',
+    alumniOf: {
+      '@type': 'CollegeOrUniversity',
+      name: 'Odisee',
+      address: { '@type': 'PostalAddress', addressLocality: 'Ghent', addressCountry: 'BE' },
+    },
+    knowsAbout: [
+      'Artificial Intelligence',
+      'Fullstack Development',
+      'Software Engineering',
+      'TypeScript',
+      'Vue.js',
+    ],
+    sameAs: [GITHUB_URL, LINKEDIN_URL],
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    name: SITE_NAME,
+    url: `${SITE_URL}/`,
+  },
+]
+---
+
+<Base title={HOME_TITLE} description={HOME_DESCRIPTION} path="/" schema={schema}>
+  <main>
+    <div class="px-4 py-5 my-5 text-center">
+      <h1 class="display-5 fw-bold">
+        <span class="text-accent">&gt;</span> {AUTHOR}
+      </h1>
+      <div class="col-lg-6 mx-auto">
+        <Typewriter text={INTRO} />
+      </div>
+    </div>
+
+    <div class="container py-5">
+      <h2 class="mb-4 text-center">My Projects</h2>
+      <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+        {projects.map((project) => (
+          <ProjectCard project={project} />
+        ))}
+      </div>
+    </div>
+  </main>
+</Base>
+
+<style>
+  .text-accent {
+    color: var(--retro-accent);
+  }
+</style>

@@ -4,48 +4,32 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": "^20.19.0 || >=22.12.0"
+    "node": ">=22.12.0"
   },
   "scripts": {
-    "dev": "vite",
-    "build": "run-p type-check \"build-only {@}\" --",
-    "preview": "vite preview",
+    "dev": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
     "preview:cloudflare": "wrangler pages dev dist",
-    "build-only": "vite build",
-    "type-check": "vue-tsc --build",
-    "lint": "eslint . --fix --cache",
-    "format": "prettier --write --experimental-cli src/"
+    "format": "prettier --write \"src/**/*.{astro,ts}\" astro.config.mjs"
   },
   "dependencies": {
-    "@pinia/colada": "^0.21.1",
     "@popperjs/core": "^2.11.8",
-    "@types/dompurify": "^3.0.5",
+    "astro": "^7.3.5",
     "bootstrap": "^5.3.8",
     "bootstrap-icons": "^1.13.1",
-    "dompurify": "^3.4.1",
-    "marked": "^17.0.1",
-    "pinia": "^3.0.4",
-    "vue": "^3.5.26",
-    "vue-router": "^4.6.4"
+    "dompurify": "^3.4.16",
+    "jsdom": "^29.1.1",
+    "marked": "^17.0.6"
   },
   "devDependencies": {
+    "@astrojs/check": "^0.9.10",
     "@cloudflare/workers-types": "^4.20260113.0",
-    "@tsconfig/node24": "^24.0.3",
-    "@types/bootstrap": "^5.2.10",
-    "@types/node": "^24.10.4",
-    "@vitejs/plugin-vue": "^6.0.3",
-    "@vue/eslint-config-prettier": "^10.2.0",
-    "@vue/eslint-config-typescript": "^14.6.0",
-    "@vue/tsconfig": "^0.8.1",
-    "eslint": "^9.39.2",
-    "eslint-plugin-vue": "~10.6.2",
-    "jiti": "^2.6.1",
-    "npm-run-all2": "^8.0.4",
+    "@types/bootstrap": "^5.2.11",
+    "@types/jsdom": "^30.0.0",
     "prettier": "3.7.4",
+    "prettier-plugin-astro": "^1.1.0",
     "typescript": "~5.9.3",
-    "vite": "^7.3.0",
-    "vite-plugin-vue-devtools": "^8.0.5",
-    "vue-tsc": "^3.2.2",
     "wrangler": "^4.59.1"
   }
 }

@@ -1,0 +1,29 @@
+# Rebuilds the site every Monday so new projects, README changes and star counts
+# from GitHub show up without having to push to this repo.
+#
+# Setup (once):
+#   1. Cloudflare dashboard → Workers & Pages → portfolio → Settings → Builds
+#      → Deploy hooks → add a hook for the production branch, copy its URL.
+#   2. GitHub → this repo → Settings → Secrets and variables → Actions
+#      → New repository secret: CLOUDFLARE_DEPLOY_HOOK = that URL.
+# You can also run it by hand: Actions → Rebuild site → Run workflow.
+name: Rebuild site
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+jobs:
+  rebuild:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Cloudflare Pages build
+        env:
+          DEPLOY_HOOK: ${{ secrets.CLOUDFLARE_DEPLOY_HOOK }}
+        run: |
+          if [ -z "$DEPLOY_HOOK" ]; then
+            echo "CLOUDFLARE_DEPLOY_HOOK secret is not set, skipping (see setup steps in this file)."
+            exit 0
+          fi
+          curl --fail --silent --show-error -X POST "$DEPLOY_HOOK"

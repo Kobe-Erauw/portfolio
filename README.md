@@ -1,8 +1,8 @@
 # 📂 Portfolio - GitHub Explorer
 
-Een moderne, interactieve portfolio-website met een subtiele retro-vibe die automatisch al mijn openbare GitHub repositories ophaalt en de bijbehorende documentatie direct op de site toont.
+Een moderne portfolio-website met een subtiele retro-vibe die automatisch al mijn openbare GitHub repositories ophaalt en de bijbehorende documentatie direct op de site toont.
 
-![Vue.js](https://img.shields.io/badge/Vue.js-4FC08D?style=for-the-badge&logo=vue.js&logoColor=white)
+![Astro](https://img.shields.io/badge/Astro-BC52EE?style=for-the-badge&logo=astro&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=for-the-badge&logo=typescript&logoColor=white)
 ![Bootstrap](https://img.shields.io/badge/Bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white)
 ![Cloudflare](https://img.shields.io/badge/Cloudflare-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
@@ -13,56 +13,61 @@ Een moderne, interactieve portfolio-website met een subtiele retro-vibe die auto
 
 ## 🌐 Live Demo
 
-**[Bekijk mijn portfolio hier!](https://www.kobeerauw.com/)**
+**[Bekijk mijn portfolio hier!](https://kobeerauw.com/)**
 
-De website is een dynamisch overzicht van al mijn codeer-projecten, live gesynchroniseerd met GitHub.
+De website is een overzicht van al mijn codeer-projecten, automatisch opgebouwd uit mijn GitHub repositories.
 
 ## 🌟 Features
 
-- **Dynamische GitHub Sync**: Haalt automatisch alle openbare repositories op van GitHub.
+- **Automatisch uit GitHub**: Elke build haalt al mijn openbare repositories en hun README's op en maakt er pagina's van.
+- **Eén pagina per project**: `/project/<naam>` toont de README van dat project, met een eigen titel en beschrijving voor Google.
+- **SEO van bij de basis**: Elke pagina is gewone HTML met canonical URL, Open Graph en structured data; plus een automatische `sitemap.xml`.
 - **Subtiele Retro Aesthetic**: Een modern dark theme met neon-groene accenten en retro typografie voor een unieke "hacker-lite" look.
-- **In-App README Viewer**: Bekijk projectdetails zonder de website te verlaten.
+- **Smart Asset Handling**: Relatieve afbeeldingen en links in README's wijzen automatisch naar de juiste plek op GitHub.
 - **Cloudflare Middleware Analytics**: Gebruikt Cloudflare Pages Middleware om bezoekersstatistieken (hits, land, user-agent) veilig te loggen naar een externe API zonder de laadtijd te beïnvloeden.
-- **Smart Asset Handling**: Corrigeert automatisch relatieve paden voor afbeeldingen en links in externe README-bestanden naar de juiste GitHub Raw bronnen.
-- **Interactieve Stats**: GitHub sterren zijn direct geïntegreerd in de navigatieknoppen voor een overzichtelijk beeld.
-- **Efficiënte Caching**: Maakt gebruik van Pinia Colada voor razendsnelle navigatie en minimale API-calls.
+- **Snel**: Geen API-calls in de browser; bijna geen JavaScript (enkel de typewriter en tooltips).
 - **Responsive Design**: Volledig geoptimaliseerd voor desktop, tablet en mobiel.
 
 ## 🚀 Technologieën
 
-- **Vue 3**: Composition API & Script Setup voor een moderne architectuur.
-- **TypeScript**: Robuuste type-checking voor de GitHub API integratie.
-- **Pinia Colada**: Geavanceerde data-fetching en state management.
+- **Astro**: Bouwt de site tijdens de build om naar statische HTML-pagina's.
+- **TypeScript**: Voor het ophalen en verwerken van de GitHub-data.
 - **Bootstrap 5 & Custom CSS**: Krachtige grid-layout gecombineerd met een op maat gemaakt retro-thema.
 - **Bootstrap Icons**: Gebruik van de officiële Bootstrap iconenset voor een consistente UI.
-- **Cloudflare Pages & Middleware**: Hosting platform met serverless middleware voor analytics en request processing.
-- **Marked.js**: Krachtige markdown-to-html conversie met custom renderers.
+- **Marked.js + DOMPurify**: Zet README's om naar veilige HTML.
+- **Cloudflare Pages & Middleware**: Hosting platform met serverless middleware voor analytics.
 
 ## 📁 Project Structuur
 
 ```
 ├── src/
-│   ├── assets/           
-│   │   └── retro.css     # Custom retro-thema
+│   ├── layouts/
+│   │   └── Base.astro          # Layout + de ENIGE plek voor <head> (titel, beschrijving, SEO)
+│   ├── pages/
+│   │   ├── index.astro         # Homepage met intro en projectkaarten
+│   │   ├── project/[name].astro # Eén pagina per project
+│   │   ├── 404.astro           # Pagina voor onbestaande URL's
+│   │   └── sitemap.xml.ts      # /sitemap.xml
 │   ├── components/
-│   │   └── ProjectList.vue # Grid van GitHub repository kaarten
-│   ├── services/
-│   │   └── github.ts     # API integratie met GitHub (REST)
-│   ├── views/
-│   │   ├── HomeView.vue  # Hoofdpagina met introductie
-│   │   └── ProjectDetailView.vue # Dynamische detailpagina met README
-│   ├── router/           # Routing configuratie
-│   ├── App.vue           # Hoofd layout component
-│   └── main.ts           # Applicatie entry point & plugin configuratie
+│   │   ├── ProjectCard.astro   # Kaart van één project
+│   │   └── Typewriter.astro    # Typ-animatie van de intro
+│   ├── lib/
+│   │   ├── site.ts             # Naam, teksten en links van de site
+│   │   ├── github.ts           # Repositories + README's ophalen tijdens de build
+│   │   └── markdown.ts         # README → veilige HTML
+│   └── styles/retro.css        # Custom retro-thema
+├── functions/_middleware.ts    # Cloudflare analytics
+├── .github/workflows/rebuild.yml # Wekelijkse rebuild
 └── README.md
 ```
 
 ## ⚙️ Hoe het werkt
 
-1. **API Koppeling**: De site vraagt de `/repos` endpoint van GitHub op voor de gebruiker `kobe-erauw`.
-2. **Data Processing**: Pinia Colada cached de resultaten, zodat de lijst direct beschikbaar is bij het navigeren.
-3. **Thema & Styling**: Bootstrap levert de fundamenten, terwijl `retro.css` de kleuren, fonts en hover-effecten aanpast naar een moderne dark-mode met retro invloeden.
-4. **Markdown Rendering**: Bij het selecteren van een project wordt de `README.md` opgehaald. Een custom renderer in `Marked.js` herschrijft on-the-fly de afbeeldingspaden naar de `raw.githubusercontent.com` URLs op basis van de `default_branch` van de repository.
+1. **Build**: `astro build` haalt via de GitHub API alle repositories van `kobe-erauw` op, plus de README van elk project.
+2. **Pagina's**: Voor elk project wordt `dist/project/<naam>.html` gemaakt, plus de homepage, een 404-pagina en `sitemap.xml`. Cloudflare Pages serveert die als `/project/<naam>`.
+3. **Welke projecten?**: Zet `[hidden]` in de GitHub-beschrijving van een repo om hem te verbergen, en `[image: bestand.png]` om een afbeelding uit de `assets/` map van die repo te tonen.
+4. **Up-to-date blijven**: Omdat alles tijdens de build gebeurt, verschijnen nieuwe projecten en sterren pas na een nieuwe build. `.github/workflows/rebuild.yml` start daarom elke maandag een build (zie de uitleg in dat bestand om het in te stellen).
+5. **GitHub token**: Zet `GITHUB_TOKEN` als environment variable in Cloudflare Pages, anders kan de build tegen de rate limit van GitHub aanlopen. Lukt het ophalen niet, dan faalt de build en blijft de vorige versie online.
 
 ## 🔧 Setup & Installatie
 
@@ -72,7 +77,7 @@ git clone https://github.com/Kobe-Erauw/portfolio
 cd portfolio
 ```
 
-2. Installeer dependencies
+2. Installeer dependencies (Node 22.12 of nieuwer)
 ```bash
 npm install
 ```
@@ -82,7 +87,7 @@ npm install
 npm run dev
 ```
 
-4. Build voor productie
+4. Build voor productie (controleert eerst de types)
 ```bash
 npm run build
 ```

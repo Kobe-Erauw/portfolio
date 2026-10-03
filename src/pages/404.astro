@@ -1,0 +1,17 @@
+---
+/** Shown (with status 404) for every URL that doesn't exist. No path → not indexed. */
+import Base from '../layouts/Base.astro'
+import { AUTHOR } from '../lib/site'
+---
+
+<Base title={`Page not found – ${AUTHOR}`} description="This page doesn't exist.">
+  <main class="container py-5 my-5 text-center">
+    <h1 class="display-5 fw-bold">
+      <span>&gt;</span> 404
+    </h1>
+    <p class="lead mb-4">This page doesn't exist (anymore).</p>
+    <a href="/" class="btn btn-outline-secondary">
+      &larr; Back to overview
+    </a>
+  </main>
+</Base>

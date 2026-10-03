@@ -1,0 +1,70 @@
+---
+/**
+ * Types out the intro text. The full text is in the HTML, so search engines and
+ * visitors without JavaScript still see it; the script only animates it.
+ */
+interface Props {
+  text: string
+}
+
+const { text } = Astro.props
+---
+
+<div class="typewriter lead mb-4">
+  <span class="visually-hidden">{text}</span>
+  <!-- Invisible copy reserves the final height, so the page doesn't jump while typing -->
+  <div class="ghost-text" aria-hidden="true">
+    {text}
+    <span class="cursor">_</span>
+  </div>
+  <div class="typing-text" aria-hidden="true">
+    <span id="typed-text">{text}</span>
+    <span class="cursor">_</span>
+  </div>
+</div>
+
+<script is:inline>
+  ;(() => {
+    const el = document.getElementById('typed-text')
+    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    const text = el.textContent
+    let i = 0
+    el.textContent = ''
+    const timer = setInterval(() => {
+      el.textContent = text.slice(0, ++i)
+      if (i >= text.length) clearInterval(timer)
+    }, 50)
+  })()
+</script>
+
+<style>
+  .typewriter {
+    position: relative;
+    font-family: var(--retro-font-mono);
+  }
+
+  .ghost-text {
+    visibility: hidden;
+  }
+
+  .typing-text {
+    position: absolute;
+    inset: 0;
+  }
+
+  .cursor {
+    display: inline-block;
+    color: var(--retro-accent);
+    animation: blink 1s step-end infinite;
+  }
+
+  @keyframes blink {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0;
+    }
+  }
+</style>
