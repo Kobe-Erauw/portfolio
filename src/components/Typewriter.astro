@@ -26,7 +26,7 @@ const { text } = Astro.props
 <script is:inline>
   ;(() => {
     const el = document.getElementById('typed-text')
-    if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+    if (!el) return
     const text = el.textContent
     let i = 0
     el.textContent = ''
