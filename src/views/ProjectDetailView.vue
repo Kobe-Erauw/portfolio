@@ -2,20 +2,34 @@
 import { useRoute } from 'vue-router'
 import { useQuery } from '@pinia/colada'
 import { fetchReadme, fetchRepository } from '../services/github'
-import { marked } from 'marked'
 import { computed, watchEffect, onUnmounted } from 'vue'
 import DOMPurify from 'dompurify'
-import { setTitle, setMetaName, setMetaProperty, setCanonical, injectJsonLd, removeJsonLd, resetTitle, resetMetaDescription } from '../utils/seo'
+import { setTitle, setMetaName, setMetaProperty, setCanonical, injectJsonLd, removeJsonLd } from '../utils/seo'
+import {
+  projectBreadcrumbJsonLd,
+  projectDescription,
+  projectJsonLd,
+  projectTitle,
+  projectUrl,
+} from '../utils/projects'
+import { renderReadme } from '../utils/markdown'
+import { getPrerenderData } from '../utils/prerender'
 
 const route = useRoute()
 const repoName = route.params.name as string
-const username = 'kobe-erauw'
+
+// When this page was prerendered (build/prerender.ts) the repo and README are
+// embedded in the HTML, so render them straight away and refresh in the background.
+const prerendered = getPrerenderData()
+const initial = prerendered?.project?.repo.name === repoName ? prerendered.project : undefined
 
 // Fetch Repo Details (for default branch)
 const { data: repoDetails } = useQuery({
   key: ['repo', repoName],
   query: () => fetchRepository(repoName),
   staleTime: 1000 * 60,
+  initialData: () => initial?.repo,
+  initialDataUpdatedAt: prerendered?.builtAt,
 })
 
 // Fetch Readme
@@ -23,33 +37,24 @@ const { data: readmeContent, status, error } = useQuery({
   key: ['readme', repoName],
   query: () => fetchReadme(repoName),
   staleTime: 1000 * 60,
+  initialData: () => initial?.readme,
+  initialDataUpdatedAt: prerendered?.builtAt,
 })
 
 const parsedReadme = computed(() => {
   if (!readmeContent.value) return ''
-
   const branch = repoDetails.value?.default_branch || 'main'
-
-  const renderer = new marked.Renderer()
-
-  // Rewrite image URLs
-  renderer.image = ({ href, title, text }) => {
-    if (href && !href.startsWith('http') && !href.startsWith('//')) {
-      const cleanPath = href.replace(/^\.?\//, '')
-      href = `https://raw.githubusercontent.com/${username}/${repoName}/${branch}/${cleanPath}`
-    }
-    return `<img src="${href}" alt="${text}" title="${title || ''}" class="img-fluid" />`
-  }
-
-  return DOMPurify.sanitize(marked.parse(readmeContent.value, { renderer }) as string)
+  return DOMPurify.sanitize(renderReadme(readmeContent.value, repoName, branch))
 })
 
-// Navigation tags are set immediately (don't depend on API data)
+// Navigation tags are set immediately (don't depend on API data).
+// Everything here must match the <head> that build/prerender.ts writes.
 watchEffect(() => {
-  setTitle(`${repoName} – Kobe Erauw`)
-  setMetaProperty('og:title', `${repoName} – Kobe Erauw`)
-  setMetaProperty('og:url', `https://kobeerauw.com/project/${repoName}`)
-  setCanonical(`/project/${repoName}`)
+  const title = projectTitle(repoName, readmeContent.value)
+  setTitle(title)
+  setMetaProperty('og:title', title)
+  setMetaProperty('og:url', projectUrl(repoName))
+  setCanonical(projectUrl(repoName))
 })
 
 // Description and structured data are set once the GitHub API has responded,
@@ -57,39 +62,19 @@ watchEffect(() => {
 watchEffect(() => {
   if (!repoDetails.value) return
 
-  const description = repoDetails.value.description
-    ? `${repoDetails.value.description} – a project by Kobe Erauw.`
-    : `${repoName} – a project by Kobe Erauw. Software & AI developer from Ghent.`
-
+  const description = projectDescription(repoDetails.value, readmeContent.value)
   setMetaName('description', description)
   setMetaProperty('og:description', description)
 
-  injectJsonLd('project-detail', {
-    '@context': 'https://schema.org',
-    '@type': 'SoftwareSourceCode',
-    'name': repoName,
-    'description': repoDetails.value.description || undefined,
-    'url': `https://kobeerauw.com/project/${repoName}`,
-    'codeRepository': repoDetails.value.html_url,
-    'programmingLanguage': repoDetails.value.language || undefined,
-    'dateCreated': repoDetails.value.created_at,
-    'dateModified': repoDetails.value.pushed_at,
-    'author': {
-      '@type': 'Person',
-      'name': 'Kobe Erauw',
-      'url': 'https://kobeerauw.com',
-      'sameAs': [
-        'https://github.com/kobe-erauw',
-        'https://www.linkedin.com/in/kobe-erauw',
-      ],
-    },
-  })
+  injectJsonLd('project-detail', projectJsonLd(repoDetails.value, readmeContent.value))
+  injectJsonLd('breadcrumbs', projectBreadcrumbJsonLd(repoDetails.value, readmeContent.value))
 })
 
+// No title/description reset here: this hook runs after the next view has already
+// set its own tags, so resetting would overwrite them.
 onUnmounted(() => {
-  resetTitle()
-  resetMetaDescription()
   removeJsonLd('project-detail')
+  removeJsonLd('breadcrumbs')
 })
 </script>
 
@@ -103,10 +88,11 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <div v-else-if="status === 'error'" class="alert alert-danger">
+    <div v-else-if="status === 'error' && readmeContent === undefined" class="alert alert-danger">
       Could not load details: {{ error?.message }}
     </div>
 
+    <!-- Markup mirrored in build/prerender.ts (projectBody) -->
     <div v-else>
       <div class="d-flex justify-content-between align-items-start gap-3 mb-4">
          <h1 class="m-0 text-break">{{ repoName }}</h1>

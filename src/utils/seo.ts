@@ -3,19 +3,13 @@
  * Used by view components to update page-specific SEO on navigation.
  */
 
-const BASE_URL = 'https://kobeerauw.com'
-const DEFAULT_TITLE = 'Kobe Erauw – Software & AI Developer'
-const DEFAULT_DESCRIPTION =
-  'Kobe Erauw is a Software & AI student at Odisee Ghent, passionate about AI engineering, fullstack development, and building smart systems. Browse my projects.'
+import { SITE_URL } from './projects'
+
+const BASE_URL = SITE_URL
 
 /** Update the document title */
 export function setTitle(title: string) {
   document.title = title
-}
-
-/** Reset the document title to the site default */
-export function resetTitle() {
-  document.title = DEFAULT_TITLE
 }
 
 /** Set or update a <meta name="..."> tag */
@@ -27,11 +21,6 @@ export function setMetaName(name: string, content: string) {
     document.head.appendChild(el)
   }
   el.content = content
-}
-
-/** Reset the meta description to the site default */
-export function resetMetaDescription() {
-  setMetaName('description', DEFAULT_DESCRIPTION)
 }
 
 /** Set or update a <meta property="..."> (Open Graph) tag */

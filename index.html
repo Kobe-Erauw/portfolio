@@ -9,25 +9,20 @@
     <link rel="preconnect" href="https://api.github.com">
     <link rel="preconnect" href="https://raw.githubusercontent.com" crossorigin>
 
-    <!-- Primary SEO -->
-    <title>Kobe Erauw – Software &amp; AI Developer</title>
-    <meta name="description" content="Kobe Erauw is a Software &amp; AI student at Odisee Ghent, passionate about AI engineering, fullstack development, and building smart systems. Browse my projects.">
     <meta name="author" content="Kobe Erauw">
-    <meta name="keywords" content="Kobe Erauw, software developer, AI engineer, fullstack developer, Odisee Ghent, portfolio, Vue, TypeScript">
-    <link rel="canonical" href="https://kobeerauw.com/">
-
-    <!-- Open Graph (Facebook, LinkedIn previews) -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://kobeerauw.com/">
-    <meta property="og:title" content="Kobe Erauw – Software &amp; AI Developer">
-    <meta property="og:description" content="Software &amp; AI student at Odisee Ghent. Explore my projects in AI engineering, fullstack development, and smart systems.">
     <meta property="og:site_name" content="Kobe Erauw Portfolio">
     <meta property="og:locale" content="en_GB">
 
-    <!-- Twitter Card -->
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:title" content="Kobe Erauw – Software &amp; AI Developer">
-    <meta name="twitter:description" content="Software &amp; AI student at Odisee Ghent. Explore my projects in AI engineering, fullstack development, and smart systems.">
+    <!--
+      Page-specific SEO. build/prerender.ts replaces everything between these
+      markers with the title, description, canonical URL, Open Graph tags and
+      JSON-LD of each generated page. The defaults below are only used by the
+      dev server and the 404 fallback page, which must NOT have a canonical tag.
+    -->
+    <!--page-head:start-->
+    <title>Kobe Erauw – Software &amp; AI Developer</title>
+    <meta name="description" content="Kobe Erauw is a Software &amp; AI student at Odisee Ghent, passionate about AI engineering, fullstack development, and building smart systems. Browse my projects.">
+    <!--page-head:end-->
 
     <!-- Structured Data: Person -->
     <script type="application/ld+json">
@@ -71,7 +66,7 @@
     </script>
   </head>
   <body>
-    <div id="app"></div>
+    <div id="app"><!--app-html--></div>
     <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

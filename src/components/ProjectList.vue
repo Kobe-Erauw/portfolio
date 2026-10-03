@@ -5,6 +5,12 @@ import { fetchRepositories } from '../services/github'
 import { Tooltip } from 'bootstrap'
 import type { DirectiveBinding } from 'vue'
 import { injectJsonLd, removeJsonLd } from '../utils/seo'
+import { projectsListJsonLd } from '../utils/projects'
+import { getPrerenderData } from '../utils/prerender'
+
+// The prerendered homepage embeds the repo list, so the cards render straight
+// away and are refreshed from the API in the background.
+const prerendered = getPrerenderData()
 
 const {
   data: repositories,
@@ -14,31 +20,16 @@ const {
   key: ['repos'],
   query: fetchRepositories,
   staleTime: 1000 * 60,
+  initialData: () => prerendered?.repos,
+  initialDataUpdatedAt: prerendered?.builtAt,
 })
 
-// Inject ItemList schema once repos load so Google can display them as rich results.
+// Keep the ItemList schema in sync with the cards (the prerendered page ships
+// the same block under the same id, so this replaces rather than duplicates it).
 // Lives here rather than in HomeView to avoid a duplicate useQuery call.
 watchEffect(() => {
   if (!repositories.value?.length) return
-
-  injectJsonLd('projects-list', {
-    '@context': 'https://schema.org',
-    '@type': 'ItemList',
-    'name': "Kobe Erauw's Projects",
-    'description': 'A collection of software and AI projects by Kobe Erauw.',
-    'url': 'https://kobeerauw.com/',
-    'numberOfItems': repositories.value.length,
-    'itemListElement': repositories.value.map((repo, i) => ({
-      '@type': 'ListItem',
-      'position': i + 1,
-      'item': {
-        '@type': 'SoftwareSourceCode',
-        'name': repo.name,
-        'description': repo.description || undefined,
-        'url': `https://kobeerauw.com/project/${repo.name}`,
-      },
-    })),
-  })
+  injectJsonLd('projects-list', projectsListJsonLd(repositories.value))
 })
 
 onUnmounted(() => removeJsonLd('projects-list'))
@@ -64,21 +55,28 @@ const vTooltip = {
   <div class="container py-5">
     <h2 class="mb-4 text-center">My Projects</h2>
 
-    <div v-if="status === 'pending'" class="text-center">
+    <div v-if="status === 'error' && !repositories" class="alert alert-danger" role="alert">
+      An error occurred while loading the projects: {{ error?.message }}
+    </div>
+
+    <div v-else-if="!repositories" class="text-center">
       <div class="spinner-border text-primary" role="status">
         <span class="visually-hidden">Loading...</span>
       </div>
     </div>
 
-    <div v-else-if="status === 'error'" class="alert alert-danger" role="alert">
-      An error occurred while loading the projects: {{ error?.message }}
-    </div>
-
+    <!-- Markup mirrored in build/prerender.ts (projectCard) -->
     <div v-else class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
       <div v-for="repo in repositories" :key="repo.id" class="col">
         <div class="card h-100 shadow-sm">
           <div class="card-body d-flex flex-column">
-            <h5 class="card-title">{{ repo.name }}</h5>
+            <h3 class="card-title h5">
+              <router-link
+                :to="{ name: 'project-detail', params: { name: repo.name } }"
+                class="text-reset"
+                >{{ repo.name }}</router-link
+              >
+            </h3>
             <h6 class="card-subtitle mb-2 text-muted" v-if="repo.language">{{ repo.language }}</h6>
 
             <img

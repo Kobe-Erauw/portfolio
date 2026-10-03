@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
+import { RouterLink, RouterView } from 'vue-router'
 </script>
+
+<!-- Header/footer markup is mirrored in build/prerender.ts (layout) -->
 
 <template>
   <header>
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
       <div class="container">
-        <a class="navbar-brand" href="#">Portfolio</a>
+        <RouterLink class="navbar-brand" to="/">Portfolio</RouterLink>
         <a
           href="https://www.linkedin.com/in/kobe-erauw"
           target="_blank"

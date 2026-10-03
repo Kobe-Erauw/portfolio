@@ -13,7 +13,7 @@ Een moderne, interactieve portfolio-website met een subtiele retro-vibe die auto
 
 ## 🌐 Live Demo
 
-**[Bekijk mijn portfolio hier!](https://www.kobeerauw.com/)**
+**[Bekijk mijn portfolio hier!](https://kobeerauw.com/)**
 
 De website is een dynamisch overzicht van al mijn codeer-projecten, live gesynchroniseerd met GitHub.
 
@@ -27,6 +27,7 @@ De website is een dynamisch overzicht van al mijn codeer-projecten, live gesynch
 - **Interactieve Stats**: GitHub sterren zijn direct geïntegreerd in de navigatieknoppen voor een overzichtelijk beeld.
 - **Efficiënte Caching**: Maakt gebruik van Pinia Colada voor razendsnelle navigatie en minimale API-calls.
 - **Responsive Design**: Volledig geoptimaliseerd voor desktop, tablet en mobiel.
+- **SEO-vriendelijk (prerendering)**: Bij elke build wordt per project een echte HTML-pagina gegenereerd met eigen titel, beschrijving, canonical URL en structured data, zodat Google elk project apart kan indexeren.
 
 ## 🚀 Technologieën
 
@@ -52,8 +53,13 @@ De website is een dynamisch overzicht van al mijn codeer-projecten, live gesynch
 │   │   ├── HomeView.vue  # Hoofdpagina met introductie
 │   │   └── ProjectDetailView.vue # Dynamische detailpagina met README
 │   ├── router/           # Routing configuratie
+│   ├── utils/
+│   │   ├── projects.ts   # Gedeelde project-helpers (titels, beschrijvingen, JSON-LD)
+│   │   └── markdown.ts   # README → HTML (gedeeld door app en build)
 │   ├── App.vue           # Hoofd layout component
 │   └── main.ts           # Applicatie entry point & plugin configuratie
+├── build/
+│   └── prerender.ts      # Vite-plugin: statische HTML per project + sitemap.xml
 └── README.md
 ```
 
@@ -62,7 +68,8 @@ De website is een dynamisch overzicht van al mijn codeer-projecten, live gesynch
 1. **API Koppeling**: De site vraagt de `/repos` endpoint van GitHub op voor de gebruiker `kobe-erauw`.
 2. **Data Processing**: Pinia Colada cached de resultaten, zodat de lijst direct beschikbaar is bij het navigeren.
 3. **Thema & Styling**: Bootstrap levert de fundamenten, terwijl `retro.css` de kleuren, fonts en hover-effecten aanpast naar een moderne dark-mode met retro invloeden.
-4. **Markdown Rendering**: Bij het selecteren van een project wordt de `README.md` opgehaald. Een custom renderer in `Marked.js` herschrijft on-the-fly de afbeeldingspaden naar de `raw.githubusercontent.com` URLs op basis van de `default_branch` van de repository.
+4. **Markdown Rendering**: Bij het selecteren van een project wordt de `README.md` opgehaald. Relatieve afbeeldingspaden worden herschreven naar `raw.githubusercontent.com` en relatieve links naar het bestand op GitHub, op basis van de `default_branch` van de repository.
+5. **Prerendering voor SEO**: Na `vite build` haalt `build/prerender.ts` alle repositories en README's op en schrijft `dist/index.html`, `dist/project/<naam>.html`, `dist/404.html` en `dist/sitemap.xml`. Cloudflare Pages serveert `/project/<naam>` dan als echte pagina; onbekende URL's krijgen een 404. Zet `GITHUB_TOKEN` als environment variable in Cloudflare Pages zodat de build niet tegen de GitHub rate limit aanloopt. Faalt het ophalen op Cloudflare, dan faalt de build en blijft de vorige versie online.
 
 ## 🔧 Setup & Installatie
 

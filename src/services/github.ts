@@ -1,72 +1,40 @@
-export interface Repository {
-  id: number
-  name: string
-  description?: string
-  html_url: string
-  stargazers_count: number
-  language?: string
-  updated_at: string
-  pushed_at: string
-  created_at: string
-  default_branch?: string
-  imageUrl?: string
-}
+import {
+  GITHUB_USER,
+  isVisibleRepository,
+  processRepository,
+  sortRepositories,
+  type Repository,
+} from '../utils/projects'
+
+export type { Repository }
 
 export async function fetchRepositories(): Promise<Repository[]> {
-  const response = await fetch(`/api/github/users/kobe-erauw/repos?per_page=100`)
+  const response = await fetch(`/api/github/users/${GITHUB_USER}/repos?per_page=100`)
   if (!response.ok) {
     throw new Error(`GitHub API error: ${response.statusText}`)
   }
   const repos: Repository[] = await response.json()
 
-  const processedRepos = repos
-    .filter((repo) => !repo.description?.includes('[hidden]'))
-    .map((repo) => {
-      const description = repo.description ?? ''
-    const imageRegex = /\[image:\s*(.*?)\s*\]/
-    const match = description.match(imageRegex)
-
-    if (match) {
-      const imageName = match[0].replace('[image:', '').replace(']', '').trim()
-      repo.description = description.replace(imageRegex, '').trim()
-      repo.imageUrl = `https://raw.githubusercontent.com/kobe-erauw/${repo.name}/main/assets/${imageName}`
-    }
-    return repo
-  })
-
-  return processedRepos.sort((a, b) => {
-    if (b.stargazers_count !== a.stargazers_count) {
-      return b.stargazers_count - a.stargazers_count
-    }
-    return (b.imageUrl ? 1 : 0) - (a.imageUrl ? 1 : 0)
-  })
+  return sortRepositories(repos.filter(isVisibleRepository).map(processRepository))
 }
 
+// Both functions return null only when GitHub says the README/repo doesn't exist.
+// Other failures throw, so the query keeps its current (e.g. prerendered) data
+// instead of replacing it with "no README".
 export async function fetchReadme(repoName: string): Promise<string | null> {
-  try {
-    const response = await fetch(`/api/github/repos/kobe-erauw/${repoName}/readme`, {
-      headers: {
-        Accept: 'application/vnd.github.raw',
-      },
-    })
-    if (!response.ok) {
-      if (response.status === 404) return null
-      throw new Error(`GitHub API error: ${response.statusText}`)
-    }
-    return await response.text()
-  } catch (error) {
-    console.error('Failed to fetch readme:', error)
-    return null
-  }
+  const response = await fetch(`/api/github/repos/${GITHUB_USER}/${repoName}/readme`, {
+    headers: {
+      Accept: 'application/vnd.github.raw',
+    },
+  })
+  if (response.status === 404) return null
+  if (!response.ok) throw new Error(`GitHub API error: ${response.statusText}`)
+  return await response.text()
 }
 
 export async function fetchRepository(repoName: string): Promise<Repository | null> {
-  try {
-    const response = await fetch(`/api/github/repos/kobe-erauw/${repoName}`)
-		if (!response.ok) return null
-    return await response.json()
-  } catch (error) {
-    console.error('Failed to fetch repo details:', error)
-    return null
-  }
+  const response = await fetch(`/api/github/repos/${GITHUB_USER}/${repoName}`)
+  if (response.status === 404) return null
+  if (!response.ok) throw new Error(`GitHub API error: ${response.statusText}`)
+  return processRepository(await response.json())
 }
